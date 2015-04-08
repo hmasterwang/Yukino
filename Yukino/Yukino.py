@@ -48,7 +48,6 @@ def main():
         # We process high range only
         lowRanges = content[1].split()[2:]
         highRanges = content[2].split()[2:]
-        highRangeStartIndex = len(lowRanges)
 
         fullList = defaultdict(list)
 
