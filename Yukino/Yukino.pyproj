@@ -30,7 +30,6 @@
   <ItemGroup>
     <Content Include="sampleoutput.txt" />
     <Content Include="sampleinput.txt" />
-    <Content Include="README.md" />
     <Content Include="yukino.png" />
   </ItemGroup>
   <PropertyGroup>

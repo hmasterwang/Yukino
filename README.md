@@ -1,5 +1,5 @@
-#я╘╔нобя╘дк
+О╩©#И⌡╙Ц┐▌Д╦▀И⌡╙Д╧┐
 
-![╓Ф╓╜╓н╓╥╓© ╓Ф╓╜╓н](yikino.png)
+![Ц┌├Ц│█Ц│╝Ц│≈Ц│÷ Ц┌├Ц│█Ц│╝](yikino.png)
 
 Converts [PyXar format](sampleinput.txt) gain calibration file to [psi-format](sampleoutput.txt).
