@@ -39,7 +39,7 @@ class Pixel(object):
 # Start
 def main():
     if len(sys.argv) < 3:
-        print './Yukino inputfile outfile'
+        print 'python ./Yukino inputfile outfile'
         sys.exit(1)
 
     with open(sys.argv[1]) as f:
