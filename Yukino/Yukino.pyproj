@@ -27,11 +27,6 @@
   <ItemGroup>
     <Compile Include="Yukino.py" />
   </ItemGroup>
-  <ItemGroup>
-    <Content Include="sampleoutput.txt" />
-    <Content Include="sampleinput.txt" />
-    <Content Include="yukino.png" />
-  </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
     <PtvsTargetsFile>$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\Python Tools\Microsoft.PythonTools.targets</PtvsTargetsFile>
