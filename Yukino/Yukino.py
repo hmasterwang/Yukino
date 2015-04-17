@@ -47,7 +47,9 @@ def main():
         content = [x.strip('\n') for x in content]
         # We process high range only
         lowRanges = content[1].split()[2:]
+        lowRanges = [int(int(x) / 7. - 1) if int(x) % 7. < 0.5 else int(int(x) / 7. + 1) for x in lowRanges]
         highRanges = content[2].split()[2:]
+        highRanges = [int(int(x) / 7. - 1) if int(x) % 7. < 0.5 else int(int(x) / 7. + 1) for x in highRanges]
 
         fullList = defaultdict(list)
 
@@ -67,7 +69,11 @@ def main():
             col = pixelData[-1]
             sys.stdout.write('.')
 
-            calibs = zip(highRanges, pixelData[len(lowRanges):len(lowRanges) + len(highRanges)])
+            calibs = zip(lowRanges + highRanges, pixelData)
+
+            seen = set()
+            seen_add = seen.add
+            calibs = [ x for x in calibs if not (x[0] in seen or seen_add(x[0]))]
 
             for calib in calibs:
                 pix = Pixel(int(row), int(col), int(calib[1]), int(calib[0]))
@@ -99,7 +105,7 @@ def main():
                 outf.write('Iteration %d --- reg = %d\n' % (idx, int(key)))
                 for pix in fullList[key]:
                     # Invalid pulse height
-                    if (pix.adc < 0):
+                    if (pix.adc < 0 and pix.adc != -9999):
                         continue
                     outf.write('r %d c %d h 0 a %d\n' % (pix.row, pix.col, pix.adc))
 
