@@ -69,8 +69,12 @@ def main():
             col = pixelData[-1]
             sys.stdout.write('.')
 
+            # High Ranges * 7
+            pixelData[len(lowRanges): -3] = [int(x) * 7 for x in  pixelData[len(lowRanges): -3]]
+
             calibs = zip(lowRanges + highRanges, pixelData)
 
+            # Remove duplicated reg
             seen = set()
             seen_add = seen.add
             calibs = [ x for x in calibs if not (x[0] in seen or seen_add(x[0]))]
