@@ -94,8 +94,8 @@ def main():
                 'CC_ALIAS: digital\n',
                 'CID: 0\n',
                 'REG: 25. Vcal-25\n',
-                'START: 0\n',
-                'STEP: 5\n',
+                'START: %d\n' %(keys[0]),
+                'STEP: 1\n',
                 'ITERATIONS: %d\n' % (len(keys)),
                 'TIME_TO_READ: 10\n',
                 'NUM_OF_PIX: 4\n',
@@ -109,7 +109,7 @@ def main():
                 outf.write('Iteration %d --- reg = %d\n' % (idx, int(key)))
                 for pix in fullList[key]:
                     # Invalid pulse height
-                    if (pix.adc < 0 and pix.adc != -9999):
+                    if (pix.adc < 0):
                         continue
                     outf.write('r %d c %d h 0 a %d\n' % (pix.row, pix.col, pix.adc))
 
