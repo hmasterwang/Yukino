@@ -13,7 +13,7 @@
     <Name>Yukino</Name>
     <RootNamespace>Yukino</RootNamespace>
     <LaunchProvider>Standard Python launcher</LaunchProvider>
-    <CommandLineArguments>D:\in.txt D:\outt.txt</CommandLineArguments>
+    <CommandLineArguments>D:\sampleinput.txt D:\outt.txt</CommandLineArguments>
     <EnableNativeCodeDebugging>False</EnableNativeCodeDebugging>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">

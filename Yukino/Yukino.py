@@ -1,4 +1,4 @@
-import sys
+﻿import sys
 import datetime
 from collections import defaultdict
 
@@ -8,13 +8,13 @@ class Pixel(object):
         self._row = None
         self._col = None
         self._adc = None
-        self._reg = None
 
-    def __init__(self, row, col, adc, reg):
-        self._row = row
-        self._col = col
-        self._adc = adc
-        self._reg = reg
+
+    def __init__(self, row, col, adc):
+        self._row = int(row)
+        self._col = int(col)
+        self._adc = int(adc)
+
 
     @property
     def col(self):
@@ -31,15 +31,11 @@ class Pixel(object):
         '''ADC Value'''
         return self._adc
 
-    @property
-    def reg(self):
-        '''Register'''
-        return self._reg
 
 # Start
 def main():
     if len(sys.argv) < 3:
-        print 'python ./Yukino inputfile outfile'
+        print('python ./Yukino inputfile outfile')
         sys.exit(1)
 
     with open(sys.argv[1]) as f:
@@ -47,18 +43,15 @@ def main():
         content = [x.strip('\n') for x in content]
         # We process high range only
         lowRanges = content[1].split()[2:]
-        lowRanges = [int(int(x) / 7. - 1) if int(x) % 7. < 0.5 else int(int(x) / 7. + 1) for x in lowRanges]
         highRanges = content[2].split()[2:]
-        highRanges = [int(int(x) / 7. - 1) if int(x) % 7. < 0.5 else int(int(x) / 7. + 1) for x in highRanges]
-
         fullList = defaultdict(list)
 
-        print('High Ranges: ')
-        for highr in highRanges:
-            print(highr),
-        print('\n'),
-
+        # Read and populate
         print('Reading gain calibration...')
+
+        # Step calculation
+
+
         # Pixel w/ multiple scan vcals
         for line in content[4:]:
             if line.isspace():
@@ -69,24 +62,24 @@ def main():
             col = pixelData[-1]
             sys.stdout.write('.')
 
-            # High Ranges * 7
-            pixelData[len(lowRanges): -3] = [int(x) * 7 for x in  pixelData[len(lowRanges): -3]]
+            #
+            highRangeData = pixelData[len(lowRanges): -3]
 
-            calibs = zip(lowRanges + highRanges, pixelData)
+            for i in range(0, len(highRangeData)):
+                fullList[int(highRanges[i])].append(Pixel(row, col, highRangeData[i]))
 
-            # Remove duplicated reg
-            seen = set()
-            seen_add = seen.add
-            calibs = [ x for x in calibs if not (x[0] in seen or seen_add(x[0]))]
+        
 
-            for calib in calibs:
-                pix = Pixel(int(row), int(col), int(calib[1]), int(calib[0]))
-                fullList[calib[0]].append(pix)
-        print('\n')
+
 
         with open(sys.argv[2], 'w+') as outf:
             print('Writing gain calibration...')
-            keys = sorted(fullList.keys(), cmp = lambda x, y: cmp(int(x), int(y)))
+            keys = sorted(fullList.keys())
+            min = keys[0]
+            max = keys[-1]
+            keyidx = 0;
+            iteration = 0;
+
             outf.writelines([ 
                 datetime.datetime.now().strftime('%H:%M:%S on %A, %B %d, %Y\n'),
                 'User Note: Gain\n',
@@ -95,23 +88,33 @@ def main():
                 'CID: 0\n',
                 'REG: 25. Vcal-25\n',
                 'START: %d\n' %(keys[0]),
-                'STEP: 1\n',
-                'ITERATIONS: %d\n' % (len(keys)),
+                'STEP: 10\n',
+                'ITERATIONS: %d\n' % ((max - min) / 10 + 1),
                 'TIME_TO_READ: 10\n',
                 'NUM_OF_PIX: 4\n',
                 'INJECT_NUM: 10\n',
                 'INJECT_PER: 400\n',
                 'MAX_ADC: 1024\n',
                 '----------------------------------------------------------------------\n'])
-            for idx, key in enumerate(keys):
-                idx += 1
-                print('Writing iteration %d Vcal %s' % (idx, key))
-                outf.write('Iteration %d --- reg = %d\n' % (idx, int(key)))
-                for pix in fullList[key]:
+
+
+            while keyidx != len(keys):
+                iteration += 1
+                reg = min + (iteration - 1) * 10
+                outf.write('Iteration %d --- reg = %d\n' % (iteration, reg))
+
+                if keys[keyidx] == reg:
+                    keyidx += 1
+                else:
+                    continue
+
+                print('Writing iteration %d reg %s' % (iteration, reg))
+                
+                for pix in fullList[reg]:
                     # Invalid pulse height
                     if (pix.adc < 0):
                         continue
-                    outf.write('r %d c %d h 0 a %d\n' % (pix.row, pix.col, pix.adc))
+                    outf.write('r %d c %d h 1 a %d\n' % (pix.row, pix.col, pix.adc * 4))
 
             outf.flush()
 
